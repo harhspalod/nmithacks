@@ -1,5 +1,5 @@
 
-````markdown
+
 # 🛍️ NMIT Shopping
 
 A full-stack eCommerce web app with an **Admin Panel** – built using **Next.js, Express.js, Prisma, and SQLite**.
@@ -7,7 +7,7 @@ A full-stack eCommerce web app with an **Admin Panel** – built using **Next.js
 NMIT Shopping is a mini-OLX style marketplace where users can **browse, list, and purchase products**.  
 It includes a **public shop**, **authentication system**, **cart & checkout**, and an **admin dashboard** for managing products, categories, users, and orders.
 
-```markdown
+
 
 ## ✨ Features
 
