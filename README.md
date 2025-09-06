@@ -1,123 +1,247 @@
+Here’s your full **GitHub-ready README** in proper Markdown code format, with everything structured and formatted for clarity:
 
-<h2>Step-by-step video instructions for running the app</h2>
+````markdown
+# 🛍️ NMIT Shopping
 
-[https://www.youtube.com/watch?v=Ry0aOMws0gE](https://www.youtube.com/watch?v=Ry0aOMws0gE)
+A full-stack eCommerce web app with an **Admin Panel** – built using **Next.js, Express.js, Prisma, and SQLite**.
 
-<h2>Instructions</h2>
-<ol>
-  <li><p>To run the app you first need to download and install Node.js and npm on your computer. Here is a link to the tutorial that explains how to install them: <a href="https://www.youtube.com/watch?v=4FAtFwKVhn0" target="_blank">https://www.youtube.com/watch?v=4FAtFwKVhn0</a>. Also here is the link where you can download them: <a href="https://nodejs.org/en" target="_blank">https://nodejs.org/en</a></p></li>
-  <li><p>When you install Node.js and npm on your computer you need to download and install MySQL on your computer. Here is another link to the tutorial which explains how you can download and install MySQL on your computer: <a target="_blank" href="https://www.youtube.com/watch?v=BxdSUGBs0gM&t=212s">https://www.youtube.com/watch?v=BxdSUGBs0gM&t=212s</a>. Here is a link where you can download MySQL: <a href="https://dev.mysql.com/downloads/installer/" target="_blank">https://dev.mysql.com/downloads/installer/</a></p></li>
-  <li><p>This step is optional, but highly recommended if you don't have a database management app. Because HeidiSQL is beginner-friendly and very easy to use than other database management options. Here is a link to the tutorial which explains how to download and install HeidiSQL: <a href="https://www.youtube.com/watch?v=oJ24MyLeiPs" target="_blank">https://www.youtube.com/watch?v=oJ24MyLeiPs</a> and here is a link where you can download it: <a href="https://www.heidisql.com" target="_blank">https://www.heidisql.com</a></p></li>
-  <li><p>When you install all the programs you need on your computer you need to download the project. When you download the project, you need to extract it.</p></li>
-  <li><p>After you extract the project you need to open the project folder in your code editor and in the root create a file with the name .env.</p></li>
-  <li><p>You need to put the following code in the .env file and instead of username and password put your MySQL username and password:</p></li>
-</ol>
+NMIT Shopping is a mini-OLX style marketplace where users can **browse, list, and purchase products**.  
+It includes a **public shop**, **authentication system**, **cart & checkout**, and an **admin dashboard** for managing products, categories, users, and orders.
 
-```
-DATABASE_URL="mysql://username:password@localhost:3306/NMITSHOPPING_nextjs"
-NEXTAUTH_SECRET=12D16C923BA17672F89B18C1DB22A
+---
+
+## ✨ Features
+
+### 👤 User
+- 🔑 Register / Login  
+- 🛒 Browse products with search & category filters  
+- 📄 View product details with price, description, and seller info  
+- 🛍️ Add to cart & checkout (demo)  
+- ❤️ Wishlist  
+- 👤 Profile: manage listings, orders, and saved items  
+
+### 👨‍💼 Admin
+- 📊 Dashboard overview (users, products, orders)  
+- 🛠️ Manage products (approve, edit, delete)  
+- 📂 Manage categories  
+- 👥 Manage users (promote, block)  
+- 📦 Manage orders  
+
+---
+
+## ⚡ Tech Stack
+- **Frontend:** Next.js 14 (App Router), TailwindCSS, DaisyUI  
+- **Backend:** Express.js REST API  
+- **Database:** SQLite (Prisma ORM)  
+- **Auth:** NextAuth.js  
+
+---
+
+## 🚀 Quick Start
+
+### 1. Requirements
+- Node.js 18+  
+- npm  
+
+### 2. Clone & Install
+```bash
+git clone <repo-url>
+cd nmit-shopping
+npm install
+````
+
+### 3. Environment Setup
+
+Create `.env` in project root:
+
+```env
+DATABASE_URL="file:./prisma/dev.db"
 NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=replace_with_long_random_string
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 ```
 
-<p>7. After you do it, you need to create another .env file in the server folder and put the same DATABASE_URL you used in the previous .env file:</p>
+Create `server/.env`:
 
-```
-DATABASE_URL="mysql://username:password@localhost:3306/NMITSHOPPING_nextjs"
-```
-
-<p>8. Now you need to open your terminal of choice in the root folder of the project and write:</p>
-
-
-```
-npm install
+```env
+DATABASE_URL="file:./dev.db"
+PORT=3001
 ```
 
-<p>9. Now you need to navigate with the terminal in the server folder and install everything:</p>
+### 4. Database Init
 
-```
+```bash
 cd server
-npm install
+# clean old migrations if switching from MySQL
+mkdir -p prisma/_backup && mv prisma/migrations prisma/_backup/ 2>/dev/null || true
+rm -f prisma/migration_lock.toml
+
+# push schema to SQLite
+npx prisma db push --force-reset
+npx prisma generate
 ```
 
-<p>10. You will need to run the Prisma migration now. Make sure you are in the server folder and write:</p>
+### 5. Seed Demo Data
 
-```
-npx prisma migrate dev
+Create `server/prisma/seed.js`:
+
+```js
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
+const prisma = new PrismaClient();
+
+async function main() {
+  const passwordHash = await bcrypt.hash('admin123', 10);
+
+  // Admin
+  await prisma.user.upsert({
+    where: { email: 'admin@nmit.com' },
+    update: { role: 'ADMIN', password: passwordHash },
+    create: {
+      email: 'admin@nmit.com',
+      username: 'admin',
+      password: passwordHash,
+      role: 'ADMIN',
+    },
+  });
+
+  // User
+  await prisma.user.upsert({
+    where: { email: 'user@nmit.com' },
+    update: {},
+    create: {
+      email: 'user@nmit.com',
+      username: 'demo',
+      password: await bcrypt.hash('user123', 10),
+      role: 'USER',
+    },
+  });
+
+  // Category & Product
+  const electronics = await prisma.category.upsert({
+    where: { name: 'Electronics' },
+    update: {},
+    create: { name: 'Electronics' },
+  });
+
+  await prisma.product.create({
+    data: {
+      title: 'Sample Laptop',
+      slug: 'sample-laptop',
+      description: 'A demo laptop product',
+      price: 49999,
+      categoryId: electronics.id,
+    },
+  });
+
+  console.log('✅ Demo data inserted');
+}
+main().then(() => prisma.$disconnect());
 ```
 
-<p>11. Next is to insert demo data. To do it you need to go to the server/utills folder and call insertDemoData.js:</p>
+Run it:
 
-```
-cd utills
-node insertDemoData.js
+```bash
+cd server
+node prisma/seed.js
 ```
 
-<p>12. Now you can go back to the server folder and run the backend:</p>
+### 6. Run Servers
 
-```
-cd ..
+Backend:
+
+```bash
+cd server
 node app.js
 ```
 
-<p>13. While your backend is running you need to open another terminal(don't stop the backend). In the second terminal, you need to make sure you are in your root project folder and write the following:</p>
+Frontend:
 
-```
+```bash
 npm run dev
 ```
 
-<p>14. Open <a href="http://localhost:3000" target="_blank">http://localhost:3000</a> and see it live!</p>
+Open: [http://localhost:3000](http://localhost:3000)
 
+---
 
-<h2>Project screenshots</h2>
+## 👥 Demo Users
 
-<h3>Home page</h3>
+| Role  | Email                                   | Password |
+| ----- | --------------------------------------- | -------- |
+| Admin | [admin@nmit.com](mailto:admin@nmit.com) | admin123 |
+| User  | [user@nmit.com](mailto:user@nmit.com)   | user123  |
 
-![NMITSHOPPING home page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/a48c092d-1f19-4bae-a480-0b5862630e1c)
+---
 
-<h3>Shop page</h3>
+## 📡 API Endpoints (Backend – Express.js)
 
-![NMITSHOPPING shop page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/1133effb-0511-40c6-aee5-119404c5af34)
+### Products
 
-<h3>Single product page</h3>
+* `GET /api/products` → list all products
+* `GET /api/products/:id` → get product details
+* `POST /api/products` → create product (auth required)
+* `PUT /api/products/:id` → update product
+* `DELETE /api/products/:id` → delete product
 
-![NMITSHOPPING single product page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/443ea3e2-4d32-4d15-aa3b-436cbae0eade)
+### Categories
 
-<h3>Register page</h3>
+* `GET /api/categories`
+* `POST /api/categories` (admin)
 
-![NMITSHOPPING register page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/0052cc90-d61a-4a8c-b8d8-02cee1b45d13)
+### Users
 
-<h3>Login page</h3>
+* `GET /api/users` (admin)
+* `POST /api/register`
+* `POST /api/login`
 
-![NMITSHOPPING logic page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/7a377bb3-330f-43a4-860f-400bf7aa0f97)
+### Orders
 
-<h3>Search page</h3>
+* `GET /api/orders` (admin)
+* `POST /api/orders` (user checkout)
 
-![NMITSHOPPING search page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/384c7f55-16ee-4966-b612-a34f5506af51)
+---
 
-<h3>Wishlist page</h3>
+## 📸 Screenshots (sample)
 
-![NMITSHOPPING wishlist page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/a20568d6-12fb-42e6-a5ef-583f6e79229a)
+* Home page
+* Shop page
+* Product detail page
+* Cart & Checkout
+* Admin Dashboard
 
-<h3>Cart page</h3>
+*(Add your actual screenshots here)*
 
-![NMITSHOPPING cart page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/b9d326be-342c-4f6a-af64-34794f6c39eb)
+---
 
-<h3>Checkout page</h3>
+## ⚠️ Troubleshooting
 
-![NMITSHOPPING checkout page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/a458d931-9df2-4e3d-bf3f-702c1a3ba9e9)
+* **Error:** `URL must start with mysql://` → Some schema still has `provider = "mysql"`. Change all to `"sqlite"` and run `npx prisma db push`.
+* **P3019 Migration error** → Delete old migrations + `migration_lock.toml`.
+* **Fetch failed from frontend** → Ensure backend is running at `http://localhost:3001` and `NEXT_PUBLIC_API_BASE_URL` is set correctly.
 
-<h3>Admin dashboard - All orders page</h3>
+---
 
-![NMITSHOPPING admin orders page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/498b07f4-422c-46c5-b2e4-ed2a93306b7a)
+## 📜 License
 
-<h3>Admin dashboard - All products page</h3>
+MIT License – free to use and modify.
 
-![NMITSHOPPING admin products page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/e26822ab-6c7e-4474-9161-288a5bb3476f)
+---
 
-<h3>Admin dashboard - All categories page<h3>
+## 📊 Architecture Flow (Mermaid)
 
-![NMITSHOPPING admin categories page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/9e4a54d7-5bbb-4f1b-bdab-43c1079510e1)
+```mermaid
+flowchart LR
+  User[Frontend: Next.js + Tailwind] -->|HTTP Requests| Backend[Express.js API]
+  Backend -->|ORM Queries| DB[(SQLite via Prisma)]
+  Admin[Admin Panel] --> Backend
+```
 
-<h3>Admin dashboard - All users page</h3>
+👉 NMIT Shopping – a complete full-stack project with SQLite, demo users, endpoints, and a seed script.
 
-![NMITSHOPPING admin users page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/e14e8f2c-4377-42fd-b89b-d4868cc11b11)
+```
+
+---
+
+Do you also want me to **add badges (build, license, tech stack logos)** at the top like GitHub pro projects? That makes the README look more professional.
+```
