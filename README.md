@@ -199,17 +199,71 @@ Open: [http://localhost:3000](http://localhost:3000)
 * `GET /api/orders` (admin)
 * `POST /api/orders` (user checkout)
 
----
+## 📸 Screenshots
 
-## 📸 Screenshots (sample)
-
-* Home page
-* Shop page
-* Product detail page
-* Cart & Checkout
-* Admin Dashboard
+> A quick tour of NMIT Shopping across the public shop, user selling flow, cart/checkout, and admin panel.
 
 ---
+
+### 🛍️ Public Storefront
+
+| Screenshot | Caption |
+|---|---|
+| ![Home](./screenshots/mainhome.png) | **Home:** Featured listings and quick entry to categories. |
+| ![Categories](./screenshots/cat.png) | **Categories:** Browse by category with filters. |
+| ![Product List](./screenshots/allprodwithname.png) | **Product List:** Grid view with names, prices, and quick actions. |
+| ![Product Details](./screenshots/prodinfo.png) | **Product Details:** Title, price, description, and seller info. |
+
+---
+
+### 🔐 Auth
+
+| Screenshot | Caption |
+|---|---|
+| ![Register](./screenshots/register.png) | **Register:** Create an account to buy/sell. |
+| ![Login](./screenshots/login.png) | **Login:** NextAuth.js powered sign-in. |
+
+---
+
+### 🧑‍💼 User — Sell & Manage
+
+| Screenshot | Caption |
+|---|---|
+| ![User Dashboard](./screenshots/dashboardtosell.png) | **Dashboard (User):** Shortcut to add/manage your listings. |
+| ![Add Product](./screenshots/addprod.png) | **Add Product:** Create a new listing with title, price & category. |
+| ![Update Product](./screenshots/upprod.png) | **Update Product:** Edit listing details (title, price, description, etc.). |
+
+> _Note:_ `addprod.png` / `upprod.png` are the seller-facing forms for used items.
+
+---
+
+### 🛒 Cart & Checkout
+
+| Screenshot | Caption |
+|---|---|
+| ![Cart](./screenshots/cart.png) | **Cart:** Review selected items and totals. |
+| ![Checkout](./screenshots/checkout.png) | **Checkout (Demo):** Place order flow for test transactions. |
+
+---
+
+### 🛠️ Admin Panel
+
+| Screenshot | Caption |
+|---|---|
+| ![All Products (Admin)](./screenshots/allprod.png) | **Products (Admin):** Review, approve, edit, or delete products. |
+| ![Add Category](./screenshots/addcat.png) | **Add Category:** Create new product categories. |
+| ![Update Category](./screenshots/upcat.png) | **Update Category:** Edit existing categories. |
+| ![Users](./screenshots/users.png) | **Users:** View/promote/block users. |
+| ![Add User](./screenshots/adduser.png) | **Add User:** Create admin or regular accounts. |
+| ![Orders](./screenshots/allord.png) | **Orders:** Track and manage all orders across the platform. |
+
+---
+
+### 🧭 Tips for Best Display
+- Keep image filenames and paths exactly as shown (`./screenshots/...`).
+- Use 1280×720 (or similar) for crisp previews in GitHub.
+- If images are too large, consider compressing with TinyPNG before committing.
+
 
 ## ⚠️ Troubleshooting
 
