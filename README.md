@@ -209,8 +209,6 @@ Open: [http://localhost:3000](http://localhost:3000)
 * Cart & Checkout
 * Admin Dashboard
 
-*(Add your actual screenshots here)*
-
 ---
 
 ## ⚠️ Troubleshooting
@@ -241,6 +239,5 @@ flowchart LR
 ```
 
 ---
-
-Do you also want me to **add badges (build, license, tech stack logos)** at the top like GitHub pro projects? That makes the README look more professional.
+Video link
 ```
