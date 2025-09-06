@@ -1,4 +1,3 @@
-Here’s your full **GitHub-ready README** in proper Markdown code format, with everything structured and formatted for clarity:
 
 ````markdown
 # 🛍️ NMIT Shopping
